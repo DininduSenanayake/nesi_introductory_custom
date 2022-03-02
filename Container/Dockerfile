@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ="America/New_York"
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        wget ca-certificates \
+        wget ca-certificates xvfb\
         libgl1 tzdata qt5-default && \
     rm -rf /var/lib/apt/lists/*
 
