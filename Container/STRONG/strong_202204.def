@@ -1,0 +1,68 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%labels
+      APPLICATION_NAME_CITE STRONG-Strain Resolution ON Graphs
+      AUTHOR_NAME Dinindu Senanayake
+      YEAR 2022
+
+%environment
+      export LANGUAGE=en_NZ.UTF-8
+      export LC_ALL=en_NZ.UTF-8
+      export LANG=en_NZ.UTF-8
+      export LC_CTYPE=en_NZ.UTF-8
+
+
+
+%post
+      apt-get -y update
+      apt-get -y install libbz2-dev libreadline-dev cmake g++ zlib1g zlib1g-dev wget curl python3 python3-dev git
+      PREFIX=/opt/conda
+      mkdir -p /opt
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+      bash Miniconda3-latest-Linux-x86_64.sh -f -b -p /opt/conda
+      . /opt/conda/etc/profile.d/conda.sh
+      conda activate base
+      conda config --add channels defaults
+      conda config --add channels bioconda
+      conda config --add channels conda-forge
+      conda update --yes --all
+      conda clean --yes --all
+      conda install -c conda-forge mamba
+      git clone --recurse-submodules https://github.com/chrisquince/STRONG.git
+      mamba env create -f ./conda_env.yaml
+      conda activate STRONG
+
+      STRONG_dir=$(dirname $(dirname "$(pwd)/$0"))
+      LOG=$STRONG_dir/install.log
+      # SPAdes install
+      echo "SPAdes install ongoing"
+      cd $STRONG_dir/SPAdes/assembler
+      ./build_cog_tools.sh &>$LOG && echo "SPAdes install succesfully"
+
+      echo "Installing BayesPaths"
+      cd  $STRONG_dir/BayesPaths
+      python ./setup.py install &>>$LOG
+
+      # install desman
+      echo "Installing DESMAN"
+      cd $STRONG_dir/DESMAN
+      python ./setup.py install &>>$LOG
+
+
+      # correct R lapack library
+      ln -fs $CONDA_PREFIX/lib/R/modules/lapack.so $CONDA_PREFIX/lib/R/modules/libRlapack.so
+
+
+# clean up
+      apt-get clean
+      conda clean --yes --all
+
+%test
+      grep -q NAME=\"Ubunutu\" /etc/os-release
+      if [ $? -wq 0]; then
+          echo "Container base is ubuntu"
+      else
+          echo "Container base is no ubuntu"
+      fi
+      $STRONG_dir/SnakeNest/scripts/check_on_dependencies.py
