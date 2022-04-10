@@ -1,2 +1,3 @@
 #!/bin/bash
+#build ::
 docker build --no-cache -t cc3d_4.2.5 .
