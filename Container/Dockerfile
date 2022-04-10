@@ -1,4 +1,6 @@
 FROM ubuntu:20.04
+
+#container image for CCC3D
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ="America/New_York"
 RUN apt-get update && apt-get install -y --no-install-recommends \
