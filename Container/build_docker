@@ -1,4 +1,8 @@
 #!/bin/bash
+<<<<<<< HEAD
 #testing commmit 
+=======
+#testing commmit changes : 
+>>>>>>> 794897ede87432b5ba34d6e83e4588af5795be49
 #build ::
 docker build --no-cache -t cc3d_4.2.5 .
