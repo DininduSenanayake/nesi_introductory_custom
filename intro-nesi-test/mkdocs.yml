@@ -4,5 +4,5 @@ site_url: https://dinindusenanayake.github.io/nesi_introductory_custom/
 nav:
   - Home: index.md
   - Getting started:
-    - R example: example.md
     - Slurm example: example.md
+    - R example: foreachparallel.md
