@@ -1,0 +1,6 @@
+site_name: Test MKdocs with nesi-intro material
+site_url: https://dinindusenanayake.github.io/nesi_introductory_custom/
+
+nav:
+    - Home: index.md
+    - R: example.md
