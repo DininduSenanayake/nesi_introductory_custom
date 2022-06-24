@@ -6,16 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        
-        <link rel="shortcut icon" href="/nesi_introductory_custom/img/favicon.ico">
-        <title>Test MKdocs with nesi-intro material</title>
-        <link href="/nesi_introductory_custom/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/nesi_introductory_custom/css/font-awesome.min.css" rel="stylesheet">
-        <link href="/nesi_introductory_custom/css/base.css" rel="stylesheet">
+        <link rel="canonical" href="https://dinindusenanayake.github.io/nesi_introductory_custom/foreachparallel/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>R example - Test MKdocs with nesi-intro material</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
 
-        <script src="/nesi_introductory_custom/js/jquery-1.10.2.min.js" defer></script>
-        <script src="/nesi_introductory_custom/js/bootstrap.min.js" defer></script>
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
@@ -23,7 +23,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="/nesi_introductory_custom/.">Test MKdocs with nesi-intro material</a>
+                <a class="navbar-brand" href="..">Test MKdocs with nesi-intro material</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -34,18 +34,18 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li class="navitem">
-                                <a href="/nesi_introductory_custom/." class="nav-link">Home</a>
+                                <a href=".." class="nav-link">Home</a>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Getting started <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="/nesi_introductory_custom/example/" class="dropdown-item">Slurm example</a>
+    <a href="../example/" class="dropdown-item">Slurm example</a>
 </li>
                                     
 <li>
-    <a href="/nesi_introductory_custom/foreachparallel/" class="dropdown-item">R example</a>
+    <a href="./" class="dropdown-item active">R example</a>
 </li>
                                 </ul>
                             </li>
@@ -57,6 +57,16 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../example/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
                     </ul>
                 </div>
             </div>
@@ -64,15 +74,47 @@
 
         <div class="container">
             <div class="row">
-
-    <div class="row-fluid">
-      <div id="main-content" class="span12">
-        <h1 id="404-page-not-found" style="text-align: center">404</h1>
-        <p style="text-align: center"><strong>Page not found</strong></p>
-      </div>
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
     </div>
 
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
 
+<p>Focusing on R, one may think on two general types of parallelising scripts. First, 'internal' parallelisation within your script can be accomplished using <code>foreach</code> and <code>doParallel</code> packages, or alternatively via functions that incorporate internal parallelisation schemes such as <code>brm</code> from package <code>brms</code>. Second, external parallelisation can be done via setting up a slurm job array. </p>
+<blockquote>
+<p>Follow up comment to <code>foreachdoparallel.R</code> script </p>
+</blockquote>
+<p>The first interesting part is setting up the number of workers. Hardly-coding it is appropriate, obviously, when you know in advance how many jobs you want to distribute for your loop. In a single computer, this is all that is needed, but below I explore how to combine this with the options from SLURM to actually use as many CPUs as needed, distributed among different nodes of a cluster. But first, let’s look at the structure of <code>foreach</code>. Despite its name, which reminds of a <code>for</code> loop, <code>foreach</code> is better thought of as a parallelized version of <code>apply</code> functions. Note that, first of all, a <code>foreach</code> loop returns an object, unlike standard <code>for</code> loops. Thus, inside the loop there will be some calculations and, importantly, the returning object (in this example, <code>coefficients(result1)</code>). Each iteration of the loop generates an instance of the object returned, and an important point is that <code>foreach</code> combines the result from all these iterations through the <code>.combine</code> argument. By default, <code>foreach</code> loops return a list with as many elements as iterations. Aside from lists, one may want to append the results of each iteration as columns to a dataframe, as in this example, or as rows (<code>rbind</code>), but more complex options are also possible. For example, if you want to return two different dataframes, that are to be combined row-wise, you need to define a tailored combine function and specify that function in the <code>foreach</code> call:</p>
+<pre><code class="language-R">comb.fun &lt;- function(...) {
+  mapply('rbind', ..., SIMPLIFY=FALSE)
+}
+
+x &lt;- iris[which(iris[,5] != &quot;setosa&quot;), c(1,5)]
+trials &lt;- 1000
+
+r &lt;- foreach(icount(trials), 
+             .combine=comb.fun) %dopar% {
+               ind &lt;- sample(100, 100, replace=TRUE)
+               result1 &lt;- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+               df1 &lt;- data.frame(intercept = coefficients(result1)[1], 
+                                 slope = coefficients(result1)[2],
+                                 row.names = NULL)
+               df2 &lt;- data.frame(x = rnorm(1,0,1), y = runif(1,0,1))
+               list(df1,df2)
+             }
+
+# the object returned is a list
+head(r[[1]])
+</code></pre></div>
             </div>
         </div>
 
@@ -81,11 +123,11 @@
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = "/nesi_introductory_custom/",
+            var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="/nesi_introductory_custom/js/base.js" defer></script>
-        <script src="/nesi_introductory_custom/search/main.js" defer></script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
