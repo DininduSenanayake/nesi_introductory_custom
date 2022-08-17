@@ -1,0 +1,21 @@
+--- xmds-3.0.0/xpdeint/support/wscript.orig	2019-05-24 15:58:12.000000000 +1200
++++ xmds-3.0.0/xpdeint/support/wscript	2021-06-28 21:14:40.264561000 +1200
+@@ -516,7 +516,8 @@
+         #)
+ 
+         check_cxx(
+-            lib=["iomp", "vml"],
++            #lib=["iomp", "vml"],
++            lib=['mkl_intel_lp64', 'mkl_intel_thread', 'mkl_core', 'iomp5','mkl_vml_avx'],
+             header_name='mkl.h',
+             uselib_store='mkl_vsl',
+             msg = "Checking for Intel's Vector Math Library",
+@@ -547,7 +548,7 @@
+         cblas_options = [
+             {# Intel MKL
+                 'defines': 'CBLAS_MKL',
+-                'lib': ['mkl_intel_lp64', 'mkl_intel_thread', 'mkl_core'],
++                'lib': ['mkl_intel_lp64', 'mkl_intel_thread', 'mkl_core', 'iomp5'],
+                 'fragment': '''
+                     extern "C" {
+                     #include <mkl_cblas.h>

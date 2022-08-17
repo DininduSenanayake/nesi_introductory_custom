@@ -1,0 +1,11 @@
+--- xmds-3.0.0/xpdeint/support/wscript.orig	2019-05-24 15:58:12.000000000 +1200
++++ xmds-3.0.0/xpdeint/support/wscript	2021-06-28 21:55:29.312035000 +1200
+@@ -163,7 +163,7 @@
+         
+         # If we have a static library marker, try to link the simulation statically for performance.
+         if conf.env['STLIB_MARKER']:
+-            conf.env['FINAL_LINK_VAR'] = conf.env['STLIB_MARKER']
++            #conf.env['FINAL_LINK_VAR'] = conf.env['STLIB_MARKER']
+             result = conf.check_cxx(
+                 msg = "Checking whether we can link to only static libraries",
+                 errmsg = "no (will use dynamic libraries)",

@@ -1,0 +1,66 @@
+easyblock = 'PythonBundle'
+
+name = 'XMDS2'
+version = '3.0.0-beta'
+versionsuffix = '-Python-%(pyver)s'
+
+homepage = 'http://www.xmds.org/'
+description = """ Fast integrator of stochastic partial differential equations."""
+
+toolchain = {'name': 'gimkl', 'version': '2020a'}
+
+dependencies = [
+    ('Python', '3.8.2'),
+    ('FFTW', '3.3.8','',('gimpi','2020a')),
+    ('GSL','2.6','',('GCCcore','9.2.0')),
+]
+
+use_pip = True
+
+exts_list = [
+    ('Cheetah3', '3.2.6', {
+        'modulename': 'Cheetah',
+        'source_urls': ['https://pypi.python.org/packages/source/c/Cheetah3/'],
+        'checksums': ['f1c2b693cdcac2ded2823d363f8459ae785261e61c128d68464c8781dba0466b'],
+    }),
+    ('Markdown', '3.3.4', {
+        'source_urls': ['https://pypi.python.org/packages/source/m/Markdown/'],
+        'checksums': ['31b5b491868dcc87d6c24b7e3d19a0d730d59d3e46f4eea6430a321bed387a49'],
+    }),
+    ('xmds2', 'beta3.0.0', {
+        'modulename': 'xpdeint',
+        'patches': ['xmds2-3.0.0_HDF5.patch','xmds2-3.0.0_mkl.patch','xmds2-3.0.0_static.patch','xmds2-3.0.0_MPICXX.patch'],
+        'source_urls': ['https://download.sourceforge.net/xmds'],
+        'checksums': ['bb0dc93ecd35c520f2b05c8b07e7fdcb4825a549ecef9a2358bcfd6b93807f70',
+                      '2c163ba9394979e7788854e89f812eda4b647c09776cf55474f5ddf27d4a36b2',
+		      'dafb26579c919d8164bd6a29ae7ae5e0538fa95a263eb8da4833e1051731a3de',
+ 		      '9e4548685f164180b45dcd1778ae49fb44997cf0cc054f1d19016cffb6773367',
+		      '81d87f76b4ed61e8a113d952062342e24f64b0f89f40a78e814b7e3f0e0e6951',		
+                       ],  # XMDS2-2.2.3_HDF5_OpenBLAS.patch
+        'install_target': 'develop',
+        'preinstallopts': 'make &&'
+    }),
+]
+
+
+
+modextravars ={'MPICXX': 'mpicxx',}
+
+
+modextrapaths = {
+    'PYTHONPATH': 'lib/python%(pyshortver)s/site-packages',
+}
+
+
+modloadmsg = "Execute the following command prior to compiling the very first model.. $ CXX=“mpicxx” xmds2 --reconfigure\n"
+
+#postinstallcmds = ['CXX="mpic++" %(installdir)s/bin/xmds2 --reconfigure',]
+
+sanity_check_paths = {
+    'files': ['bin/xmds2' ,'bin/xsil2graphics2'],
+    'dirs': ['lib/python%(pyshortver)s/site-packages'],
+}
+
+moduleclass = 'math'
+
+

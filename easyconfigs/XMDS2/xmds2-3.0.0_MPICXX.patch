@@ -1,0 +1,11 @@
+--- xmds-3.0.0/xpdeint/support/wscript.orig	2019-05-24 15:58:12.000000000 +1200
++++ xmds-3.0.0/xpdeint/support/wscript	2021-06-30 14:55:35.364905000 +1200
+@@ -751,7 +751,7 @@
+     print("Configuring for MPI scripts...")
+     conf.setenv('mpi', env)
+     conf.env['ENVIRONMENT_NAME'] = 'mpi'
+-    if conf.find_program('mpic++', var='MPICXX', mandatory = False) or conf.find_program('mpiicpc', var='MPICXX', mandatory = False):
++    if conf.find_program('mpicxx', var='MPICXX', mandatory = False) or conf.find_program('mpiicpc', var='MPICXX', mandatory = False):
+         
+         conf.env['CXX'] = conf.env['MPICXX']
+         conf.env['LINK_CXX'] = conf.env['MPICXX']

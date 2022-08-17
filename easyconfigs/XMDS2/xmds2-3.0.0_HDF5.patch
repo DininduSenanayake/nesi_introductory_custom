@@ -1,0 +1,11 @@
+--- xmds-3.0.0/xpdeint/support/wscript.orig	2019-05-24 15:58:12.000000000 +1200
++++ xmds-3.0.0/xpdeint/support/wscript	2021-06-28 20:08:54.928107000 +1200
+@@ -397,7 +397,7 @@
+         )
+         
+         # Check for hdf5
+-        if conf.find_program('h5cc', var='H5CC', mandatory = False):
++        if conf.find_program('h5pcc', var='H5CC', mandatory = False):
+             h5cc_shared_flags = conf.cmd_and_log([conf.env['H5CC'][0], '-show', '-shlib'])
+             h5cc_static_flags = conf.cmd_and_log([conf.env['H5CC'][0], '-show', '-noshlib'])
+             
